@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <script src="https://cdn.jsdelivr.net/npm/mobile-detect@1.4.5/mobile-detect.min.js"></script>
+  <script>
+      const iOS = !!window.navigator.platform && /iPad|iPhone|iPod/.test(window.navigator.platform);
+      const app = {
+        launchApp: function() {
+          window.location.replace("stampted://rank/{{ userId }}");
+          // this.timer = setTimeout(this.openWebApp, 1000);
+        },
+
+        openWebApp: function() {
+          window.location.replace("itms-apps://itunes.com/apps/stampted");
+        }
+      };
+
+      if (iOS) {
+        // Just replace `https://` with `itms://` on your app's AppStore link.
+        // window.location.href = "stampted://rank/1";
+        app.launchApp();
+      }
+  </script>
+  <head>
+    <meta charset="utf-8" />
+    <title>Stampt</title>
+  </head>
+  <body>
+    {{!-- {{ message }} --}}
+  </body>
+  
+</html>

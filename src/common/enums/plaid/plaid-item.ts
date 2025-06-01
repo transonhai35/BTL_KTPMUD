@@ -1,0 +1,17 @@
+export enum PlaidProductEnum {
+  TRANSACTIONS = 'transactions',
+  AUTH = 'auth',
+  IDENTITY = 'identity',
+  INCOME = 'income',
+  ASSETS = 'assets',
+  LIABILITIES = 'liabilities',
+  PAYMENT_INITIATION = 'payment_initiation',
+  INVESTMENTS = 'investments',
+  BALANCE = 'balance',
+  IDENTITY_MATCH = 'identity_match',
+  INCOME_VERIFICATION = 'income_verification',
+  RECURRING_TRANSACTIONS = 'recurring_transactions',
+  STATEMENTS = 'statements',
+  TRANSFER = 'transfer',
+  SIGNAL = 'signal',
+}

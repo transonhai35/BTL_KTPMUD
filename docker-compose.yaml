@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:17.2
+    container_name: stampted-db
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+    ports:
+      - ${DB_PORT}:5432
+    volumes:
+      - stampted-postgres-data:/var/lib/postgresql/data
+    networks:
+      - stampted-network
+  kafka:
+    image: apache/kafka:3.7.2
+    container_name: stampted-kafka
+    ports:
+      - 9092:9092
+    networks:
+      - stampted-network
+volumes:
+  stampted-postgres-data:
+
+networks:
+  stampted-network:
+    driver: bridge
