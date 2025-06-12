@@ -12,6 +12,14 @@ export class CreateDistrictDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+  
+  @ApiProperty({
+    description: 'Code of the district',
+    example: 'DIST-001',
+  })
+  @IsString()
+  @IsOptional()
+  code?: string;
 
   @ApiProperty({
     description: 'List of communes in the district',
@@ -29,6 +37,14 @@ export class CreateCommuneDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @ApiProperty({
+    description: 'Code of the commune',
+    example: 'COMM-001',
+  })
+  @IsString()
+  @IsOptional()
+  code?: string;
 }
 
 export class DistrictDto {
