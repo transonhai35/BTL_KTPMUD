@@ -8,6 +8,7 @@ import { UploadModule } from './modules/upload/upload.module';
 import { ClsModule } from 'nestjs-cls';
 import { WebhookModule } from './modules/webhook/webhook.module';
 import { DistrictModule } from './modules/district/district.module';
+import { CommuneModule } from './modules/commune/commune.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DistrictModule } from './modules/district/district.module';
     UserModule,
     UploadModule,
     DistrictModule,
+    CommuneModule,
   ],
   controllers: [],
   providers: [],
