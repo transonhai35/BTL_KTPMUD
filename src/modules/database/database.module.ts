@@ -8,6 +8,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { DataSource } from 'typeorm';
 import {
+  CommuneRepository,
+  DistrictRepository,
   UserOtpRepository,
   UserRepository,
   UserSocialRepository,
@@ -20,6 +22,8 @@ const repositories = [
   UserSocialRepository,
   UserOtpRepository,
   ShareProfileRepository,
+  CommuneRepository,
+  DistrictRepository,
 ] as Provider[];
 
 @Global()

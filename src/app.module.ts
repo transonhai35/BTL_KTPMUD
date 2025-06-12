@@ -7,6 +7,7 @@ import { UserModule } from './modules/user/user.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { ClsModule } from 'nestjs-cls';
 import { WebhookModule } from './modules/webhook/webhook.module';
+import { DistrictModule } from './modules/district/district.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { WebhookModule } from './modules/webhook/webhook.module';
     WebhookModule,
     UserModule,
     UploadModule,
+    DistrictModule,
   ],
   controllers: [],
   providers: [],
