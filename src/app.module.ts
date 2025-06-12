@@ -9,6 +9,7 @@ import { ClsModule } from 'nestjs-cls';
 import { WebhookModule } from './modules/webhook/webhook.module';
 import { DistrictModule } from './modules/district/district.module';
 import { CommuneModule } from './modules/commune/commune.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CommuneModule } from './modules/commune/commune.module';
     UploadModule,
     DistrictModule,
     CommuneModule,
+    AdminModule,
   ],
   controllers: [],
   providers: [],
