@@ -67,6 +67,21 @@ export class WaterSanitationPlanService {
 
     Object.assign(waterSanitationPlan, payload);
 
+    if (payload.assign?.length) {
+      const existingUsers = await this.userRepo.findBy({
+        id: In(payload.assign),
+      });
+
+      const existingUserIds = existingUsers.map(user => user.id);
+      const invalidUserIds = payload.assign.filter(id => !existingUserIds.includes(id));
+
+      if (invalidUserIds.length > 0) {
+        throw new NotFoundException(`UserNot Found: ${invalidUserIds.join(', ')}`);
+      }
+
+      waterSanitationPlan.assign = payload.assign;
+    }
+
     if (payload.communeId) {
       const commune = await this.communeRepo.findById(payload.communeId);
       if (!commune) {
