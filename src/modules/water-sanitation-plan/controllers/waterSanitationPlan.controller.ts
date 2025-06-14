@@ -10,13 +10,15 @@ import {
   Param,
   UseGuards,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ApiOkResponse, AuthUser, UseGuardAuth } from '@/decorators';
-import { RoleTypeEnum } from '../../../common';
+import { PageDto, RoleTypeEnum } from '../../../common';
 import { WaterSanitationPlanService } from '../services/waterSanitationPlan.service';
-import { CreateWaterSanitationPlanDto, UpdateWaterSanitationPlanDto, WaterSanitationPlanDto } from '../dto/waterSanitationPlan.dto';
+import { CreateWaterSanitationPlanDto, UpdateWaterSanitationPlanDto, WaterSanitationPlanDto, WaterSanitationPlanPageDto } from '../dto/waterSanitationPlan.dto';
 import { WaterSanitationPlanEntity } from '../../database/typeorm/entities/water-sanitation-plan';
+import { Payload } from '@nestjs/microservices';
 
 
 @ApiTags('water-sanitation-plans')
@@ -30,15 +32,17 @@ export class WaterSanitationPlanController {
     type: WaterSanitationPlanDto,
     isArray: true,
   })
-  getAllWaterSanitationPlans(): Promise<WaterSanitationPlanEntity[]> {
-    return this.waterSanitationPlanService.findAll();
+  async getAllWaterSanitationPlans(
+    @Query() payload: WaterSanitationPlanPageDto
+  ): Promise<PageDto<WaterSanitationPlanEntity>> {
+    return this.waterSanitationPlanService.findAll(payload);
   }
 
   @Get('/:id')
   @ApiOkResponse({
     type: WaterSanitationPlanDto,
   })
-  getWaterSanitationPlanById(@Param('id') id: string): Promise<WaterSanitationPlanEntity> {
+  async getWaterSanitationPlanById(@Param('id') id: string): Promise<WaterSanitationPlanEntity> {
     return this.waterSanitationPlanService.findOne(id);
   }
 
@@ -49,7 +53,7 @@ export class WaterSanitationPlanController {
   @UseGuardAuth({
     roles: [RoleTypeEnum.Admin]
   })
-  createWaterSanitationPlan(@AuthUser('id') userId: string, @Body() payload: CreateWaterSanitationPlanDto): Promise<WaterSanitationPlanEntity> {
+  async createWaterSanitationPlan(@AuthUser('id') userId: string, @Body() payload: CreateWaterSanitationPlanDto): Promise<WaterSanitationPlanEntity> {
     return this.waterSanitationPlanService.create(payload, userId);
   }
   
@@ -60,7 +64,7 @@ export class WaterSanitationPlanController {
   @UseGuardAuth({
     roles: [RoleTypeEnum.Admin]
   })
-  updateWaterSanitationPlan(@Param('id') id: string, @Body() payload: UpdateWaterSanitationPlanDto): Promise<WaterSanitationPlanEntity> {
+  async updateWaterSanitationPlan(@Param('id') id: string, @Body() payload: UpdateWaterSanitationPlanDto): Promise<WaterSanitationPlanEntity> {
     return this.waterSanitationPlanService.update(id, payload);
   }
 
@@ -71,7 +75,7 @@ export class WaterSanitationPlanController {
   @UseGuardAuth({
     roles: [RoleTypeEnum.Admin]
   })
-  removeWaterSanitationPlan(@Param('id') id: string): Promise<void> {
+  async removeWaterSanitationPlan(@Param('id') id: string): Promise<void> {
     return this.waterSanitationPlanService.remove(id);
   }
 

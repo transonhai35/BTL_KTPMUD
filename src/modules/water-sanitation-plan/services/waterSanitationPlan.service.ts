@@ -8,9 +8,10 @@ import {
   UserRepository,
   WaterSanitationPlanRepository,
 } from '@/modules/database';
-import { CreateWaterSanitationPlanDto, UpdateWaterSanitationPlanDto } from '../dto/waterSanitationPlan.dto';
+import { CreateWaterSanitationPlanDto, UpdateWaterSanitationPlanDto, WaterSanitationPlanPageDto } from '../dto/waterSanitationPlan.dto';
 import { WaterSanitationPlanEntity } from '../../database/typeorm/entities/water-sanitation-plan';
 import { In } from 'typeorm';
+import { PageDto } from '../../../common';
 
 @Injectable()
 export class WaterSanitationPlanService {
@@ -51,9 +52,15 @@ export class WaterSanitationPlanService {
 
   }
 
-  async findAll(): Promise<WaterSanitationPlanEntity[]> {
-    const waterSanitationPlans = await this.WaterSanitationPlanRepo.find();
-    return waterSanitationPlans;
+  async findAll(payload: WaterSanitationPlanPageDto): Promise<PageDto<WaterSanitationPlanEntity>> {
+    const { limit = 10, page = 1 } = payload;
+
+    const [waterSanitationPlans, total] = await this.WaterSanitationPlanRepo.findAndCount({
+      take: limit,
+      skip: (page - 1) * limit,
+    });
+    
+    return new PageDto<WaterSanitationPlanEntity>(waterSanitationPlans, total);
   }
 
   async findOne(id: string): Promise<WaterSanitationPlanEntity> {
@@ -66,6 +73,21 @@ export class WaterSanitationPlanService {
     const waterSanitationPlan = await this.findOne(id);
 
     Object.assign(waterSanitationPlan, payload);
+
+    if (payload.assign?.length) {
+      const existingUsers = await this.userRepo.findBy({
+        id: In(payload.assign),
+      });
+
+      const existingUserIds = existingUsers.map(user => user.id);
+      const invalidUserIds = payload.assign.filter(id => !existingUserIds.includes(id));
+
+      if (invalidUserIds.length > 0) {
+        throw new NotFoundException(`UserNot Found: ${invalidUserIds.join(', ')}`);
+      }
+
+      waterSanitationPlan.assign = payload.assign;
+    }
 
     if (payload.communeId) {
       const commune = await this.communeRepo.findById(payload.communeId);

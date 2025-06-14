@@ -5,6 +5,7 @@ import { IsArray, IsDate, IsDateString, IsEnum, IsNotEmpty, IsOptional, IsString
 import { WaterSanitationPlanEntity } from '../../database/typeorm/entities/water-sanitation-plan';
 import { PlanType } from '../../../common/enums/plan-type';
 import { WaterPlanStatus } from '../../../common/enums/water-plan-status.enum';
+import { PageOptionsDto } from '../../../common';
 
 export class WaterSanitationPlanDto {
   @Expose()
@@ -120,5 +121,9 @@ export class CreateWaterSanitationPlanDto {
 }
 
 export class UpdateWaterSanitationPlanDto extends CreateWaterSanitationPlanDto {
+
+}
+
+export class WaterSanitationPlanPageDto extends PageOptionsDto{
 
 }

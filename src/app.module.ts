@@ -10,7 +10,8 @@ import { WebhookModule } from './modules/webhook/webhook.module';
 import { DistrictModule } from './modules/district/district.module';
 import { CommuneModule } from './modules/commune/commune.module';
 import { AdminModule } from './modules/admin/admin.module';
-import { WaterSanitationPlanModule } from './modules/water-sanitation-plan/commune.module';
+import { WaterSanitationPlanModule } from './modules/water-sanitation-plan/waterSanitationPlanModule.module';
+import { WaterSupplyModule } from './modules/water-supply/water-suplly.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { WaterSanitationPlanModule } from './modules/water-sanitation-plan/commu
     DistrictModule,
     CommuneModule,
     AdminModule,
-    WaterSanitationPlanModule
+    WaterSanitationPlanModule,
+    WaterSupplyModule,
   ],
   controllers: [],
   providers: [],
