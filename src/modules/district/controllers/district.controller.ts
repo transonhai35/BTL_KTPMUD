@@ -30,7 +30,7 @@ export class DistrictController {
     type: DistrictDto,
     isArray: true,
   })
-  getAllDistricts(): Promise<DistrictDto[]> {
+  async getAllDistricts(): Promise<DistrictDto[]> {
     return this.districtService.findAll();
   }
 
@@ -38,7 +38,7 @@ export class DistrictController {
   @ApiOkResponse({
     type: DistrictDto,
   })
-  getDistrictById(@Param('id') id: string): Promise<DistrictDto> {
+  async getDistrictById(@Param('id') id: string): Promise<DistrictDto> {
     return this.districtService.findOne(id);
   }
 
@@ -49,7 +49,7 @@ export class DistrictController {
   @UseGuardAuth({
     roles: [RoleTypeEnum.Admin]
   })
-  createDistrict(@AuthUser('id') userId: string, @Body() payload: CreateDistrictDto): Promise<DistrictDto> {
+  async createDistrict(@AuthUser('id') userId: string, @Body() payload: CreateDistrictDto): Promise<DistrictDto> {
     return this.districtService.create(payload, userId);
   }
   
@@ -60,7 +60,7 @@ export class DistrictController {
   @UseGuardAuth({
     roles: [RoleTypeEnum.Admin]
   })
-  updateDistrict(@Param('id') id: string, @Body() payload: UpdateDistrictDto): Promise<DistrictDto> {
+  async updateDistrict(@Param('id') id: string, @Body() payload: UpdateDistrictDto): Promise<DistrictDto> {
     return this.districtService.update(id, payload);
   }
 
@@ -71,7 +71,7 @@ export class DistrictController {
   @UseGuardAuth({
     roles: [RoleTypeEnum.Admin]
   })
-  removeDistrict(@Param('id') id: string): Promise<void> {
+  async removeDistrict(@Param('id') id: string): Promise<void> {
     return this.districtService.remove(id);
   }
 

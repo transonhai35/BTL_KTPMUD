@@ -10,14 +10,15 @@ import {
   Param,
   UseGuards,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ApiOkResponse, AuthUser, UseGuardAuth } from '@/decorators';
-import { RoleTypeEnum } from '../../../common';
+import { PageDto, RoleTypeEnum } from '../../../common';
 import { WaterSanitationPlanEntity } from '../../database/typeorm/entities/water-sanitation-plan';
 import { WaterSupplyService } from '../services/waterSuplly.service';
 import { WaterSupplyEntity } from '../../database/typeorm/entities/water-supply';
-import { CreateWaterSupplyDto, UpdateWaterSupplyDto } from '../dto/waterSuplly.dto';
+import { CreateWaterSupplyDto, UpdateWaterSupplyDto, WaterSupplyPageDto } from '../dto/waterSuplly.dto';
 
 
 @ApiTags('water-supply')
@@ -27,12 +28,12 @@ export class WaterSupplyController {
   constructor(private readonly waterSupplyService: WaterSupplyService) { }
 
   @Get('/list')
-  getAllWaterSupplies(): Promise<WaterSupplyEntity[]> {
-    return this.waterSupplyService.findAll();
+  async getAllWaterSupplies(@Query() payload: WaterSupplyPageDto): Promise<PageDto<WaterSupplyEntity>> {
+    return this.waterSupplyService.findAll(payload);
   }
 
   @Get('/:id')
-  getWaterSupplyById(@Param('id') id: string): Promise<WaterSupplyEntity> {
+  async getWaterSupplyById(@Param('id') id: string): Promise<WaterSupplyEntity> {
     return this.waterSupplyService.findOne(id);
   }
 
@@ -40,7 +41,7 @@ export class WaterSupplyController {
   @UseGuardAuth({
     roles: [RoleTypeEnum.Admin]
   })
-  createWaterSupply(@AuthUser('id') userId: string, @Body() payload: CreateWaterSupplyDto): Promise<WaterSupplyEntity> {
+  async createWaterSupply(@AuthUser('id') userId: string, @Body() payload: CreateWaterSupplyDto): Promise<WaterSupplyEntity> {
     return this.waterSupplyService.create(payload, userId);
   }
   
@@ -48,16 +49,22 @@ export class WaterSupplyController {
   @UseGuardAuth({
     roles: [RoleTypeEnum.Admin]
   })
-  updateWaterSupply(@Param('id') id: string, @Body() payload: UpdateWaterSupplyDto): Promise<WaterSupplyEntity> {
+  async updateWaterSupply(@Param('id') id: string, @Body() payload: UpdateWaterSupplyDto): Promise<WaterSupplyEntity> {
     return this.waterSupplyService.update(id, payload);
   }
+
+  @Put('/:id/business')
+  async updateWaterSupplyByBiz(@AuthUser('id') bizId: string, @Param('id') id: string, @Body() payload: UpdateWaterSupplyDto): Promise<WaterSupplyEntity> {
+    return this.waterSupplyService.updateByBiz(bizId, id, payload);
+  }
+
 
   @Delete('/:id')
 
   @UseGuardAuth({
     roles: [RoleTypeEnum.Admin]
   })
-  removeWaterSupply(@Param('id') id: string): Promise<void> {
+  async removeWaterSupply(@Param('id') id: string): Promise<void> {
     return this.waterSupplyService.remove(id);
   }
 

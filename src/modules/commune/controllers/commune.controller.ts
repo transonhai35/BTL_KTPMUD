@@ -29,7 +29,7 @@ export class CommuneController {
     type: CommuneDto,
     isArray: true,
   })
-  getAllCommunes(): Promise<CommuneDto[]> {
+  async getAllCommunes(): Promise<CommuneDto[]> {
     return this.communeService.findAll();
   }
 
@@ -37,7 +37,7 @@ export class CommuneController {
   @ApiOkResponse({
     type: CommuneDto,
   })
-  getCommuneById(@Param('id') id: string): Promise<CommuneDto> {
+  async getCommuneById(@Param('id') id: string): Promise<CommuneDto> {
     return this.communeService.findOne(id);
   }
 
@@ -48,7 +48,7 @@ export class CommuneController {
   @UseGuardAuth({
     roles: [RoleTypeEnum.Admin]
   })
-  createCommune(@AuthUser('id') userId: string, @Body() payload: CreateCommuneDto): Promise<CommuneDto> {
+  async createCommune(@AuthUser('id') userId: string, @Body() payload: CreateCommuneDto): Promise<CommuneDto> {
     return this.communeService.create(payload, userId);
   }
   
@@ -59,7 +59,7 @@ export class CommuneController {
   @UseGuardAuth({
     roles: [RoleTypeEnum.Admin]
   })
-  updateCommune(@Param('id') id: string, @Body() payload: UpdateCommuneDto): Promise<CommuneDto> {
+  async updateCommune(@Param('id') id: string, @Body() payload: UpdateCommuneDto): Promise<CommuneDto> {
     return this.communeService.update(id, payload);
   }
 
@@ -70,7 +70,7 @@ export class CommuneController {
   @UseGuardAuth({
     roles: [RoleTypeEnum.Admin]
   })
-  removeCommune(@Param('id') id: string): Promise<void> {
+  async removeCommune(@Param('id') id: string): Promise<void> {
     return this.communeService.remove(id);
   }
 

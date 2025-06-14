@@ -6,6 +6,7 @@ import { WaterSanitationPlanEntity } from '../../database/typeorm/entities/water
 import { PlanType } from '../../../common/enums/plan-type';
 import { WaterPlanStatus } from '../../../common/enums/water-plan-status.enum';
 import { WaterSupplyEnum } from '../../../common/enums/water-supply.enum';
+import { PageOptionsDto } from '../../../common';
 
 export class CreateWaterSupplyDto {
   @ApiProperty({
@@ -84,5 +85,10 @@ export class CreateWaterSupplyDto {
 }
 
 export class UpdateWaterSupplyDto extends CreateWaterSupplyDto {
+
+}
+
+
+export class WaterSupplyPageDto extends PageOptionsDto{
 
 }

@@ -8,9 +8,10 @@ import {
   UserRepository,
   WaterSanitationPlanRepository,
 } from '@/modules/database';
-import { CreateWaterSanitationPlanDto, UpdateWaterSanitationPlanDto } from '../dto/waterSanitationPlan.dto';
+import { CreateWaterSanitationPlanDto, UpdateWaterSanitationPlanDto, WaterSanitationPlanPageDto } from '../dto/waterSanitationPlan.dto';
 import { WaterSanitationPlanEntity } from '../../database/typeorm/entities/water-sanitation-plan';
 import { In } from 'typeorm';
+import { PageDto } from '../../../common';
 
 @Injectable()
 export class WaterSanitationPlanService {
@@ -51,9 +52,15 @@ export class WaterSanitationPlanService {
 
   }
 
-  async findAll(): Promise<WaterSanitationPlanEntity[]> {
-    const waterSanitationPlans = await this.WaterSanitationPlanRepo.find();
-    return waterSanitationPlans;
+  async findAll(payload: WaterSanitationPlanPageDto): Promise<PageDto<WaterSanitationPlanEntity>> {
+    const { limit = 10, page = 1 } = payload;
+
+    const [waterSanitationPlans, total] = await this.WaterSanitationPlanRepo.findAndCount({
+      take: limit,
+      skip: (page - 1) * limit,
+    });
+    
+    return new PageDto<WaterSanitationPlanEntity>(waterSanitationPlans, total);
   }
 
   async findOne(id: string): Promise<WaterSanitationPlanEntity> {

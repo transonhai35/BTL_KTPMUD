@@ -10,8 +10,9 @@ import {
 } from '@/modules/database';
 import { WaterSanitationPlanEntity } from '../../database/typeorm/entities/water-sanitation-plan';
 import { In } from 'typeorm';
-import { CreateWaterSupplyDto, UpdateWaterSupplyDto } from '../dto/waterSuplly.dto';
+import { CreateWaterSupplyDto, UpdateWaterSupplyDto, WaterSupplyPageDto } from '../dto/waterSuplly.dto';
 import { WaterSupplyEntity } from '../../database/typeorm/entities/water-supply';
+import { PageDto } from '../../../common';
 
 @Injectable()
 export class WaterSupplyService {
@@ -45,9 +46,15 @@ export class WaterSupplyService {
 
   }
 
-  async findAll(): Promise<WaterSupplyEntity[]> {
-    const waterSupplies = await this.WaterSupplyRepo.find();
-    return waterSupplies;
+  async findAll(payload: WaterSupplyPageDto): Promise<PageDto<WaterSupplyEntity>> {
+    const { limit = 10, page = 1 } = payload;
+
+    const [waterSupplies, total] = await this.WaterSupplyRepo.findAndCount({
+      take: limit,
+      skip: (page - 1) * limit,
+    });
+
+    return new PageDto<WaterSupplyEntity>(waterSupplies, total);
   }
 
   async findOne(id: string): Promise<WaterSupplyEntity> {
@@ -74,6 +81,36 @@ export class WaterSupplyService {
       }
 
       waterSupply.owner = payload.owner;
+    }
+
+
+    return await this.WaterSupplyRepo.save(waterSupply);
+  }
+
+  async updateByBiz(bizId: string, id: string, payload: UpdateWaterSupplyDto): Promise<WaterSupplyEntity> {
+    const waterSupply = await this.WaterSupplyRepo.createQueryBuilder('waterSupply')
+    .where('waterSupply.id = :id', { id })
+    .andWhere(':bizId = ANY(waterSupply.owner)', { bizId })
+    .getOne();
+
+    if (!waterSupply) {
+      throw new NotFoundException('Water Supply not found or you are not an owner');
+    }
+
+    Object.assign(waterSupply, payload);
+
+    if (payload.owner?.length) {
+      const existingUsers = await this.userRepo.findBy({
+        id: In(payload.owner),
+      });
+
+      const existingUserIds = existingUsers.map(user => user.id);
+      const invalidUserIds = payload.owner.filter(id => !existingUserIds.includes(id));
+
+      if (invalidUserIds.length > 0) {
+        throw new NotFoundException(`UserNot Found: ${invalidUserIds.join(', ')}`);
+      }
+
     }
 
 
