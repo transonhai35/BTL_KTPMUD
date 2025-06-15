@@ -1,11 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { PlanType } from '../../../../../common/enums/plan-type';
 import { WaterPlanStatus } from '../../../../../common/enums/water-plan-status.enum';
 import { BaseUuidEntity } from '../BaseUuidEntity';
 import { DistrictEntity } from '../district';
 import { CommuneEntity } from '../commune';
+import { WaterAccessIndicatorEntity } from '../water-access-indicator/waterAccessIndicator.entity';
 
-@Entity()
+@Entity({name: 'water_sanitation_plans'})
 export class WaterSanitationPlanEntity extends BaseUuidEntity {
   @Column()
   title: string;
@@ -21,6 +22,12 @@ export class WaterSanitationPlanEntity extends BaseUuidEntity {
 
   @ManyToOne(() => CommuneEntity, (commune) => commune.waterSanitationPlans, { onDelete: 'CASCADE' })
   commune: CommuneEntity;
+
+  @Column({ nullable: true })
+  communeId: string;
+
+  @OneToMany(() => WaterAccessIndicatorEntity, (indicator) => indicator.waterSanitationPlan, { onDelete: 'CASCADE' })
+  waterAccessIndicators: WaterAccessIndicatorEntity[];
 
   @Column({ type: 'text', nullable: true })
   description: string;

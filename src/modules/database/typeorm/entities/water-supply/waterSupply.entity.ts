@@ -1,8 +1,9 @@
-import { Column, Entity} from 'typeorm';
+import { Column, Entity, ManyToOne} from 'typeorm';
 import { WaterSupplyEnum } from '../../../../../common/enums/water-supply.enum';
 import { BaseUuidEntity } from '../BaseUuidEntity';
+import { CommuneEntity } from '../commune';
 
-@Entity()
+@Entity({name: 'water_supplies'})
 export class WaterSupplyEntity extends BaseUuidEntity {
   @Column()
   name: string;
@@ -23,7 +24,16 @@ export class WaterSupplyEntity extends BaseUuidEntity {
   constructionYear: number;
 
   @Column({ nullable: true })
+  constructionMonth: number;
+
+  @Column({ nullable: true })
   householdCount: number;
+
+  @ManyToOne(() => CommuneEntity, (commune) => commune.waterSupplies, { onDelete: 'CASCADE' })
+  commune: CommuneEntity;
+
+  @Column({ nullable: true })
+  communeId: string;
 
   @Column({ type: 'json', nullable: true })
   meta: Record<string, any>;
@@ -33,4 +43,7 @@ export class WaterSupplyEntity extends BaseUuidEntity {
 
   @Column({ type: 'text', array: true, nullable: true })
   owner: string[];
+
+  @Column({ nullable: true })
+  createdBy: string;
 }

@@ -19,6 +19,7 @@ import { WaterSanitationPlanEntity } from '../../database/typeorm/entities/water
 import { WaterSupplyService } from '../services/waterSuplly.service';
 import { WaterSupplyEntity } from '../../database/typeorm/entities/water-supply';
 import { CreateWaterSupplyDto, UpdateWaterSupplyDto, WaterSupplyPageDto } from '../dto/waterSuplly.dto';
+import { get } from 'lodash';
 
 
 @ApiTags('water-supply')
@@ -39,7 +40,7 @@ export class WaterSupplyController {
 
   @Post('/')
   @UseGuardAuth({
-    roles: [RoleTypeEnum.Admin]
+    roles: [RoleTypeEnum.Admin, RoleTypeEnum.Business]
   })
   async createWaterSupply(@AuthUser('id') userId: string, @Body() payload: CreateWaterSupplyDto): Promise<WaterSupplyEntity> {
     return this.waterSupplyService.create(payload, userId);
@@ -57,7 +58,6 @@ export class WaterSupplyController {
   async updateWaterSupplyByBiz(@AuthUser('id') bizId: string, @Param('id') id: string, @Body() payload: UpdateWaterSupplyDto): Promise<WaterSupplyEntity> {
     return this.waterSupplyService.updateByBiz(bizId, id, payload);
   }
-
 
   @Delete('/:id')
 

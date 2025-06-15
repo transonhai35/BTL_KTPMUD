@@ -15,6 +15,7 @@ import {
   UserSocialRepository,
   WaterSanitationPlanRepository,
   WaterSupplyRepository,
+  WaterAccessIndicatorRepository,
 } from './typeorm';
 import { ShareProfileRepository } from './typeorm/repositories/user/share-profile.repository';
 
@@ -28,6 +29,7 @@ const repositories = [
   DistrictRepository,
   WaterSanitationPlanRepository,
   WaterSupplyRepository,
+  WaterAccessIndicatorRepository,
 ] as Provider[];
 
 @Global()
