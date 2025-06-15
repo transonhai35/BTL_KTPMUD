@@ -16,7 +16,7 @@ import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { UserDto, ProfileRankingResponseDto } from '@/common/dto/user.dto';
 import { ApiOkResponse, AuthUser, UseGuardAuth } from '@/decorators';
 import { AdminService } from '../services/admin.service';
-import { UserProfilePageDto, UserResponseDto } from '../dto/admin.dto';
+import { RegisterRequestDto, UserProfilePageDto, UserResponseDto } from '../dto/admin.dto';
 import { PageDto, RoleTypeEnum } from '../../../common';
 
 
@@ -61,4 +61,13 @@ export class AdminController {
     return this.adminService.toggleUserActivation(id);
   }
 
+  @Post('/register')
+   @UseGuardAuth({
+    roles: [RoleTypeEnum.Admin]
+  })
+  @UsePipes(new ValidationPipe({ whitelist: true })) // Remove unauthorized fields
+  register(@Body() payload: RegisterRequestDto) {
+    return this.adminService.registerUser(payload);
+  }
+  
 }
