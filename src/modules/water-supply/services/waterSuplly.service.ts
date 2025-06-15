@@ -13,6 +13,7 @@ import { In } from 'typeorm';
 import { CreateWaterSupplyDto, UpdateWaterSupplyDto, WaterSupplyPageDto } from '../dto/waterSuplly.dto';
 import { WaterSupplyEntity } from '../../database/typeorm/entities/water-supply';
 import { PageDto } from '../../../common';
+import { WaterSupplyEnum } from '../../../common/enums/water-supply.enum';
 
 @Injectable()
 export class WaterSupplyService {
@@ -21,10 +22,16 @@ export class WaterSupplyService {
   constructor(
     private readonly WaterSupplyRepo: WaterSupplyRepository,
     private readonly userRepo: UserRepository,
+    private readonly communeRepo: CommuneRepository,
 
   ) {}
 
    async create(payload: CreateWaterSupplyDto, userId: string): Promise<WaterSupplyEntity> {
+    const commune = await this.communeRepo.findById(payload.communeId);
+    if (!commune) {
+      throw new NotFoundException(`Commune not found`);
+    }
+    
     if (payload.owner?.length) {
       const existingUsers = await this.userRepo.findBy({
         id: In(payload.owner),
@@ -40,6 +47,8 @@ export class WaterSupplyService {
 
     const waterSupply = await this.WaterSupplyRepo.store({
       ...payload,
+      commune: commune,
+      createdBy: userId,
     });
 
     return waterSupply;
@@ -48,11 +57,25 @@ export class WaterSupplyService {
 
   async findAll(payload: WaterSupplyPageDto): Promise<PageDto<WaterSupplyEntity>> {
     const { limit = 10, page = 1 } = payload;
+    let [waterSupplies, total]: [WaterSupplyEntity[], number]= [[], 0];
 
-    const [waterSupplies, total] = await this.WaterSupplyRepo.findAndCount({
-      take: limit,
-      skip: (page - 1) * limit,
-    });
+    if (payload.orderField == 'commune') {
+      [waterSupplies, total] = await this.WaterSupplyRepo.findAndCount({
+        take: limit,
+        skip: (page - 1) * limit,
+        where: {
+          commune: { id: payload.q },
+        },
+      });
+    }else {
+      [waterSupplies, total] = await this.WaterSupplyRepo.findAndCount({
+        take: limit,
+        skip: (page - 1) * limit,
+        where: {
+          [payload.orderField]: payload.q,
+        }
+      });
+    }
 
     return new PageDto<WaterSupplyEntity>(waterSupplies, total);
   }

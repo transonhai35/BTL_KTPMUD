@@ -1,7 +1,7 @@
 import { Expose, plainToInstance, Type } from 'class-transformer';
 import { CommuneEntity } from '../../database/typeorm/entities/commune';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsDateString, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsDate, IsDateString, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, IsUUID, Max, Min } from 'class-validator';
 import { WaterSanitationPlanEntity } from '../../database/typeorm/entities/water-sanitation-plan';
 import { PlanType } from '../../../common/enums/plan-type';
 import { WaterPlanStatus } from '../../../common/enums/water-plan-status.enum';
@@ -24,6 +24,14 @@ export class CreateWaterSupplyDto {
   @IsString()
   @IsNotEmpty()
   status: string;
+
+  @ApiProperty({
+    description: 'Commune ID associated with the water supply plan',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsUUID()
+  @IsNotEmpty()
+  communeId: string;
 
   @ApiProperty({
     description: 'Location of the water supply plan',
@@ -50,10 +58,17 @@ export class CreateWaterSupplyDto {
   @IsNumber()
   capacity?: number;
 
- @ApiProperty({ description: '', example: 2005 })
+  @ApiProperty({ description: '', example: 2005 })
   @IsOptional()
   @IsNumber()
   constructionYear?: number;
+
+  @ApiProperty({ description: '', example: 5 })
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(12)
+  constructionMonth?: number;
 
   @ApiProperty({ description: '', example: 120 })
   @IsOptional()
